@@ -3313,10 +3313,7 @@ int32_t lis2ds12_pedo_steps_period_get(const stmdev_ctx_t *ctx,
     ret = lis2ds12_read_reg(ctx, LIS2DS12_STEP_COUNT_DELTA, buff, 1);
   }
 
-  if (ret == 0)
-  {
-    ret = lis2ds12_mem_bank_set(ctx, LIS2DS12_USER_BANK);
-  }
+  ret += lis2ds12_mem_bank_set(ctx, LIS2DS12_USER_BANK);
 
   return ret;
 }
