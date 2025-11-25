@@ -119,9 +119,9 @@ float_t lis2ds12_from_fs16g_to_mg(int16_t lsb)
   return ((float_t)lsb * 0.488f);
 }
 
-float_t lis2ds12_from_lsb_to_celsius(int16_t lsb)
+float_t lis2ds12_from_lsb_to_celsius(int8_t lsb)
 {
-  return (((float_t)lsb / 256.0f) + 25.0f);
+  return (((float_t)lsb) + 25.0);
 }
 
 /**
@@ -510,19 +510,21 @@ int32_t lis2ds12_acceleration_module_raw_get(const stmdev_ctx_t *ctx,
 }
 
 /**
-  * @brief  Temperature data output register (r). L and H registers together
-  *         express a 16-bit word in two's complement.[get]
+  * @brief  Temperature data output register (r). The value is expressed
+  *         as two's complement sign. Sensitivity = 1 °C/LSB 0 LSB
+  *         represent T=25 °C ambient. (Use `lis2ds12_from_lsb_to_celsius`
+  *         to convert raw data)[get]
   *
   * @param  ctx    read / write interface definitions.(ptr)
   * @param  buff   buffer that stores data read.(ptr)
   * @retval        Interface status (MANDATORY: return 0 -> no Error).
   *
   */
-int32_t lis2ds12_temperature_raw_get(const stmdev_ctx_t *ctx, uint8_t *buff)
+int32_t lis2ds12_temperature_raw_get(const stmdev_ctx_t *ctx, int8_t *buff)
 {
   int32_t ret;
 
-  ret = lis2ds12_read_reg(ctx, LIS2DS12_OUT_T, buff, 1);
+  ret = lis2ds12_read_reg(ctx, LIS2DS12_OUT_T, (uint8_t *)buff, 1);
 
   return ret;
 }
