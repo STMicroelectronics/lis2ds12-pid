@@ -121,7 +121,7 @@ float_t lis2ds12_from_fs16g_to_mg(int16_t lsb)
 
 float_t lis2ds12_from_lsb_to_celsius(int8_t lsb)
 {
-  return (((float_t)lsb) + 25.0);
+  return (((float_t)lsb) + 25.0f);
 }
 
 /**
