@@ -30,7 +30,20 @@ This directory contains the LIS2DS12 component drivers.
 # Update history
 
 ::: {.collapse}
-<input type="checkbox" id="collapse-section8" checked aria-hidden="true">
+<input type="checkbox" id="collapse-section9" checked aria-hidden="true">
+<label for="collapse-section9" aria-hidden="true">V2.2.3 / 30-Mar-2026</label>
+<div>
+
+## Main changes
+
+- Fix typo causing a warning
+- Fix parameter names to stmdev read/write/deleay functions
+
+##
+
+</div>
+
+<input type="checkbox" id="collapse-section8" aria-hidden="true">
 <label for="collapse-section8" aria-hidden="true">V2.2.2 / 18-Mar-2026</label>
 <div>
 
@@ -42,6 +55,7 @@ This directory contains the LIS2DS12 component drivers.
 ##
 
 </div>
+
 <input type="checkbox" id="collapse-section7" aria-hidden="true">
 <label for="collapse-section7" aria-hidden="true">V2.2.1 / 15-Jan-2026</label>
 <div>
