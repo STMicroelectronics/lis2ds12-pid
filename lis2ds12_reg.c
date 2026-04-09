@@ -209,7 +209,7 @@ int32_t lis2ds12_block_data_update_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl1.bdu = val;
+    ctrl1.bdu = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL1, (uint8_t *)&ctrl1, 1);
   }
 
@@ -257,7 +257,7 @@ int32_t lis2ds12_xl_full_scale_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl1.fs = (uint8_t)val;
+    ctrl1.fs = (uint8_t)val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL1, (uint8_t *)&ctrl1, 1);
   }
 
@@ -547,12 +547,9 @@ int32_t lis2ds12_acceleration_raw_get(const stmdev_ctx_t *ctx, int16_t *val)
 
   if (ret != 0) { return ret; }
 
-  val[0] = (int16_t)buff[1];
-  val[0] = (val[0] * 256) + (int16_t)buff[0];
-  val[1] = (int16_t)buff[3];
-  val[1] = (val[1] * 256) + (int16_t)buff[2];
-  val[2] = (int16_t)buff[5];
-  val[2] = (val[2] * 256) + (int16_t)buff[4];
+  val[0] = (int16_t)(buff[0] | ((uint16_t)buff[1] << 8));
+  val[1] = (int16_t)(buff[2] | ((uint16_t)buff[3] << 8));
+  val[2] = (int16_t)(buff[4] | ((uint16_t)buff[5] << 8));
 
   return ret;
 }
@@ -574,8 +571,7 @@ int32_t lis2ds12_number_of_steps_get(const stmdev_ctx_t *ctx, int16_t *val)
 
   if (ret != 0) { return ret; }
 
-  *val = (int16_t)buff[1];
-  *val = (*val * 256) + (int16_t)buff[0];
+  *val = (int16_t)(buff[0] | ((uint16_t)buff[1] << 8));
 
   return ret;
 }
@@ -627,7 +623,7 @@ int32_t lis2ds12_auto_increment_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl2.if_add_inc = val;
+    ctrl2.if_add_inc = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -680,7 +676,7 @@ int32_t lis2ds12_mem_bank_set(const stmdev_ctx_t *ctx,
 
     if (ret == 0)
     {
-      ctrl2.func_cfg_en = (uint8_t)val;
+      ctrl2.func_cfg_en = (uint8_t)val & 0x01U;
       ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
     }
   }
@@ -692,7 +688,7 @@ int32_t lis2ds12_mem_bank_set(const stmdev_ctx_t *ctx,
 
     if (ret == 0)
     {
-      ctrl2_adv.func_cfg_en = (uint8_t)val;
+      ctrl2_adv.func_cfg_en = (uint8_t)val & 0x01U;
       ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2_ADV,
                                (uint8_t *)&ctrl2_adv, 1);
     }
@@ -719,7 +715,7 @@ int32_t lis2ds12_reset_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl2.soft_reset = val;
+    ctrl2.soft_reset = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -766,7 +762,7 @@ int32_t lis2ds12_boot_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl2.boot = val;
+    ctrl2.boot = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -813,7 +809,7 @@ int32_t lis2ds12_xl_self_test_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.st = (uint8_t)val;
+    ctrl3.st = (uint8_t)val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -878,7 +874,7 @@ int32_t lis2ds12_data_ready_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl5.drdy_pulsed = (uint8_t)val;
+    ctrl5.drdy_pulsed = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL5, (uint8_t *)&ctrl5, 1);
   }
 
@@ -952,7 +948,7 @@ int32_t lis2ds12_xl_hp_path_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl2.fds_slope = (uint8_t)val;
+    ctrl2.fds_slope = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -1025,7 +1021,7 @@ int32_t lis2ds12_spi_mode_set(const stmdev_ctx_t *ctx, lis2ds12_sim_t val)
 
   if (ret == 0)
   {
-    ctrl2.sim = (uint8_t)val;
+    ctrl2.sim = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -1085,7 +1081,7 @@ int32_t lis2ds12_i2c_interface_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl2.i2c_disable = (uint8_t)val;
+    ctrl2.i2c_disable = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL2, (uint8_t *)&ctrl2, 1);
   }
 
@@ -1147,7 +1143,7 @@ int32_t lis2ds12_cs_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    fifo_ctrl.if_cs_pu_dis = (uint8_t)val;
+    fifo_ctrl.if_cs_pu_dis = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FIFO_CTRL,
                              (uint8_t *)&fifo_ctrl, 1);
   }
@@ -1222,7 +1218,7 @@ int32_t lis2ds12_pin_mode_set(const stmdev_ctx_t *ctx, lis2ds12_pp_od_t val)
 
   if (ret == 0)
   {
-    ctrl3.pp_od = (uint8_t)val;
+    ctrl3.pp_od = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -1283,7 +1279,7 @@ int32_t lis2ds12_pin_polarity_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.h_lactive = (uint8_t)val;
+    ctrl3.h_lactive = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -1344,7 +1340,7 @@ int32_t lis2ds12_int_notification_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.lir = (uint8_t)val;
+    ctrl3.lir = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -1544,7 +1540,7 @@ int32_t lis2ds12_all_on_int1_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl5.int2_on_int1 = val;
+    ctrl5.int2_on_int1 = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL5, (uint8_t *)&ctrl5, 1);
   }
 
@@ -1604,7 +1600,7 @@ int32_t lis2ds12_sh_pin_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    func_ctrl.tud_en = (uint8_t)val;
+    func_ctrl.tud_en = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -1680,7 +1676,7 @@ int32_t lis2ds12_wkup_threshold_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    wake_up_ths.wu_ths = val;
+    wake_up_ths.wu_ths = val & 0x3FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_WAKE_UP_THS,
                              (uint8_t *)&wake_up_ths, 1);
   }
@@ -1729,7 +1725,7 @@ int32_t lis2ds12_wkup_dur_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    wake_up_dur.wu_dur = val;
+    wake_up_dur.wu_dur = val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_WAKE_UP_DUR,
                              (uint8_t *)&wake_up_dur, 1);
   }
@@ -1791,7 +1787,7 @@ int32_t lis2ds12_sleep_mode_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    wake_up_ths.sleep_on = val;
+    wake_up_ths.sleep_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_WAKE_UP_THS,
                              (uint8_t *)&wake_up_ths, 1);
   }
@@ -1840,7 +1836,7 @@ int32_t lis2ds12_act_sleep_dur_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    wake_up_dur.sleep_dur = val;
+    wake_up_dur.sleep_dur = val & 0x0FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_WAKE_UP_DUR,
                              (uint8_t *)&wake_up_dur, 1);
   }
@@ -1902,7 +1898,7 @@ int32_t lis2ds12_tap_detection_on_z_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.tap_z_en = val;
+    ctrl3.tap_z_en = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -1950,7 +1946,7 @@ int32_t lis2ds12_tap_detection_on_y_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.tap_y_en = val;
+    ctrl3.tap_y_en = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -1998,7 +1994,7 @@ int32_t lis2ds12_tap_detection_on_x_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl3.tap_x_en = val;
+    ctrl3.tap_x_en = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_CTRL3, (uint8_t *)&ctrl3, 1);
   }
 
@@ -2046,7 +2042,7 @@ int32_t lis2ds12_tap_threshold_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    tap_6d_ths.tap_ths = val;
+    tap_6d_ths.tap_ths = val & 0x1FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_TAP_6D_THS,
                              (uint8_t *)&tap_6d_ths, 1);
   }
@@ -2098,7 +2094,7 @@ int32_t lis2ds12_tap_shock_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int_dur.shock = val;
+    int_dur.shock = val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_INT_DUR, (uint8_t *)&int_dur, 1);
   }
 
@@ -2152,7 +2148,7 @@ int32_t lis2ds12_tap_quiet_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int_dur.quiet = val;
+    int_dur.quiet = val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_INT_DUR, (uint8_t *)&int_dur, 1);
   }
 
@@ -2206,7 +2202,7 @@ int32_t lis2ds12_tap_dur_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int_dur.lat = val;
+    int_dur.lat = val & 0x0FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_INT_DUR, (uint8_t *)&int_dur, 1);
   }
 
@@ -2258,7 +2254,7 @@ int32_t lis2ds12_tap_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    wake_up_ths.single_double_tap = (uint8_t)val;
+    wake_up_ths.single_double_tap = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_WAKE_UP_THS,
                              (uint8_t *)&wake_up_ths, 1);
   }
@@ -2353,7 +2349,7 @@ int32_t lis2ds12_6d_threshold_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    tap_6d_ths._6d_ths = (uint8_t)val;
+    tap_6d_ths._6d_ths = (uint8_t)val & 0x03U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_TAP_6D_THS,
                              (uint8_t *)&tap_6d_ths, 1);
   }
@@ -2424,7 +2420,7 @@ int32_t lis2ds12_4d_mode_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    tap_6d_ths._4d_en = val;
+    tap_6d_ths._4d_en = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_TAP_6D_THS,
                              (uint8_t *)& tap_6d_ths, 1);
   }
@@ -2547,7 +2543,7 @@ int32_t lis2ds12_ff_dur_get(const stmdev_ctx_t *ctx, uint8_t *val)
 
   if (ret == 0)
   {
-    *val = (wake_up_dur.ff_dur << 5) + free_fall.ff_dur;
+    *val = (uint8_t)((wake_up_dur.ff_dur << 5) | free_fall.ff_dur);
   }
 
   return ret;
@@ -2571,7 +2567,7 @@ int32_t lis2ds12_ff_threshold_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    free_fall.ff_ths = val;
+    free_fall.ff_ths = val & 0x07U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FREE_FALL,
                              (uint8_t *)&free_fall, 1);
   }
@@ -2634,7 +2630,7 @@ int32_t lis2ds12_fifo_xl_module_batch_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    fifo_ctrl.module_to_fifo = val;
+    fifo_ctrl.module_to_fifo = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FIFO_CTRL,
                              (uint8_t *)&fifo_ctrl, 1);
   }
@@ -2686,7 +2682,7 @@ int32_t lis2ds12_fifo_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    fifo_ctrl.fmode = (uint8_t)val;
+    fifo_ctrl.fmode = (uint8_t)val & 0x07U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FIFO_CTRL,
                              (uint8_t *)&fifo_ctrl, 1);
   }
@@ -2862,8 +2858,7 @@ int32_t lis2ds12_fifo_data_level_get(const stmdev_ctx_t *ctx, uint16_t *val)
 
   if (ret == 0)
   {
-    *val = fifo_src.diff;
-    *val = (*val * 256U) +  fifo_ths.fth;
+    *val = (uint16_t)(fifo_ths.fth | ((uint16_t)fifo_src.diff << 8));
   }
 
   return ret;
@@ -2917,7 +2912,7 @@ int32_t lis2ds12_pedo_threshold_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    step_counter_minths.sc_mths = val;
+    step_counter_minths.sc_mths = val & 0x3FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_STEP_COUNTER_MINTHS,
                              (uint8_t *)&step_counter_minths, 1);
   }
@@ -2967,7 +2962,7 @@ int32_t lis2ds12_pedo_full_scale_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    step_counter_minths.pedo4g = (uint8_t)val;
+    step_counter_minths.pedo4g = (uint8_t)val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_STEP_COUNTER_MINTHS,
                              (uint8_t *)&step_counter_minths, 1);
   }
@@ -3030,7 +3025,7 @@ int32_t lis2ds12_pedo_step_reset_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    step_counter_minths.rst_nstep = val;
+    step_counter_minths.rst_nstep = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_STEP_COUNTER_MINTHS,
                              (uint8_t *)&step_counter_minths, 1);
   }
@@ -3103,7 +3098,7 @@ int32_t lis2ds12_pedo_sens_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    func_ctrl.step_cnt_on = val;
+    func_ctrl.step_cnt_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -3158,7 +3153,7 @@ int32_t lis2ds12_pedo_debounce_steps_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    pedo_deb_reg.deb_step = val;
+    pedo_deb_reg.deb_step = val & 0x07U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_PEDO_DEB_REG,
                              (uint8_t *)&pedo_deb_reg, 1);
   }
@@ -3225,7 +3220,7 @@ int32_t lis2ds12_pedo_timeout_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    pedo_deb_reg.deb_time = val;
+    pedo_deb_reg.deb_time = val & 0x1FU;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_PEDO_DEB_REG,
                              (uint8_t *)&pedo_deb_reg, 1);
   }
@@ -3375,7 +3370,7 @@ int32_t lis2ds12_motion_sens_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    func_ctrl.sign_mot_on = val;
+    func_ctrl.sign_mot_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -3530,7 +3525,7 @@ int32_t lis2ds12_tilt_sens_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    func_ctrl.tilt_on = val;
+    func_ctrl.tilt_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -3592,7 +3587,7 @@ int32_t lis2ds12_module_sens_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    func_ctrl.module_on = val;
+    func_ctrl.module_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -3673,7 +3668,7 @@ int32_t lis2ds12_sh_master_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    func_ctrl.master_on = val;
+    func_ctrl.master_on = val & 0x01U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_FUNC_CTRL,
                              (uint8_t *)&func_ctrl, 1);
   }
@@ -3725,7 +3720,7 @@ int32_t lis2ds12_sh_cfg_write(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    slv0_add.slave0_add = (val->slv_add & 0xFEU) >> 1;
+    slv0_add.slave0_add = (val->slv_add >> 1) & 0x7FU;
     slv0_add.rw_0 = 0;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_SLV0_ADD,
                              (uint8_t *)&slv0_add, 1);
@@ -3770,7 +3765,7 @@ int32_t lis2ds12_sh_slv_cfg_read(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    slv0_add.slave0_add = (val->slv_add & 0xFEU) >> 1;
+    slv0_add.slave0_add = (val->slv_add >> 1) & 0x7FU;
     slv0_add.rw_0 = 1;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_SLV0_ADD,
                              (uint8_t *)&slv0_add, 1);
@@ -3790,7 +3785,7 @@ int32_t lis2ds12_sh_slv_cfg_read(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    slv0_config.slave0_numop = val->slv_len;
+    slv0_config.slave0_numop = val->slv_len & 0x07U;
     ret = lis2ds12_write_reg(ctx, LIS2DS12_SLV0_CONFIG,
                              (uint8_t *)&slv0_config, 1);
   }
